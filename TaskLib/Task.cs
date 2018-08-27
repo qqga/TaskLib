@@ -14,7 +14,7 @@ namespace TaskLib
         bool? IsComplited { get; set; }
         IEnumerable<ITask> SubTasks { get; set; }
         int? SupTaskId { get; set; }
-        Task SupTask { get; set; }
+        ITask SupTask { get; set; }
 
     }
     public class Task : IDisposable, ITask
@@ -71,7 +71,7 @@ namespace TaskLib
         }
         public int? SupTaskId { get; set; }
         // 
-        public Task SupTask { get; set; }
+        public ITask SupTask { get; set; }
         // Подзадачи.
         public IEnumerable<ITask> SubTasks { get; set; }
 

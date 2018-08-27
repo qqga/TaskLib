@@ -50,4 +50,16 @@ namespace Task.ConsoleApp
         public TimeSpan? PeriodObj => string.IsNullOrEmpty(PeriodStr) ? null : (TimeSpan?)TimeSpan.Parse(PeriodStr);
     }
 
+
+    [Verb("web", HelpText = "Get tasks from web.")]
+    class WebTasksOptions : CmdArgs, IWebTasksOptions
+    {
+        [Value(0, Default = "URI", HelpText = "URI of web api, which returns task in json format.")]
+        public string URI { get; set; }
+        [Option('k', "Key", HelpText = "User app key, to identify concrete user in web api.")]
+        public string UserKey { get; set; }
+        [Option('p', "Period", HelpText = "Period to ")]
+        public string RequestPeriodStr { get; set; }
+        public TimeSpan RequestPeriod { get; set; }
+    }
 }

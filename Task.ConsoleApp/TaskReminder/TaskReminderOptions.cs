@@ -10,7 +10,7 @@ namespace Task.ConsoleApp
     {
         string CmdCommandText { get; set; }
         bool Hidden { get; set; }
-        string GetTaskCmdCommand(TaskLib.Task task);
+        string GetTaskCmdCommand(TaskLib.Task task);// todo 
     }
 
     public interface IFileOptions : IOptions
@@ -24,5 +24,12 @@ namespace Task.ConsoleApp
         DateTime? DateTimeObj { get; }
         TimeSpan? PeriodObj { get; }
         string TaskName { get; set; }
+    }
+
+    public interface IWebTasksOptions : IOptions
+    {        
+        string URI { get; set; }
+        string UserKey { get; set; }        
+        TimeSpan RequestPeriod { get; set; }
     }
 }
