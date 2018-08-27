@@ -12,7 +12,7 @@ namespace TaskLib
         DateTime? TargetDT { get; set; }
         TimeSpan? RemindPeriod { get; set; }
         bool? IsComplited { get; set; }
-        IEnumerable<Task> SubTasks { get; set; }
+        IEnumerable<ITask> SubTasks { get; set; }
         int? SupTaskId { get; set; }
         Task SupTask { get; set; }
 
@@ -73,7 +73,7 @@ namespace TaskLib
         // 
         public Task SupTask { get; set; }
         // Подзадачи.
-        public IEnumerable<Task> SubTasks { get; set; }
+        public IEnumerable<ITask> SubTasks { get; set; }
 
         //public bool IsActual => IsComplited == false;
 
