@@ -13,7 +13,7 @@ namespace TaskLib
         TimeSpan? RemindPeriod { get; set; }
         bool? IsComplited { get; set; }
         IEnumerable<Task> SubTasks { get; set; }
-        int SupTaskId { get; set; }
+        int? SupTaskId { get; set; }
         Task SupTask { get; set; }
 
     }
@@ -69,7 +69,7 @@ namespace TaskLib
                 }
             }
         }
-        public int SupTaskId { get; set; }
+        public int? SupTaskId { get; set; }
         // 
         public Task SupTask { get; set; }
         // Подзадачи.
