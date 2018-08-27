@@ -3,7 +3,21 @@ using System.Collections.Generic;
 
 namespace TaskLib
 {
-    public class Task : IDisposable
+    public interface ITask
+    {
+        int TaskId { get; set; }
+        string Name { get; set; }
+        string Description { get; set; }
+        DateTime CreatedDT { get; set; }
+        DateTime? TargetDT { get; set; }
+        TimeSpan? RemindPeriod { get; set; }
+        bool? IsComplited { get; set; }
+        IEnumerable<Task> SubTasks { get; set; }
+        int SupTaskId { get; set; }
+        Task SupTask { get; set; }
+
+    }
+    public class Task : IDisposable, ITask
     {
         public static Func<DateTime> DateTimeNowGetter = () => DateTime.Now;
 
@@ -23,7 +37,6 @@ namespace TaskLib
                     _TargetDT = value;
                     OnTargetDTChanged();
                 }
-
             }
         }
 
@@ -38,7 +51,6 @@ namespace TaskLib
                 {
                     _RemindPeriod = value;
                     OnRemindPeriodChanged();
-
                 }
             }
         }
@@ -62,8 +74,6 @@ namespace TaskLib
         public Task SupTask { get; set; }
         // Подзадачи.
         public IEnumerable<Task> SubTasks { get; set; }
-
-        //public int SensitivePeriodMs { get; set; } = 70000;
 
         //public bool IsActual => IsComplited == false;
 
