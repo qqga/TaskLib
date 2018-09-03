@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Task.ConsoleApp.Utils;
 
 namespace Task.ConsoleApp
 {
@@ -16,7 +17,7 @@ namespace Task.ConsoleApp
     where T : IOptions //, IDisposable
     {
         protected T _Opts;
-        protected IEnumerable<TaskLib.Task> _Tasks;
+        protected List<TaskLib.Task> _Tasks = new List<TaskLib.Task>();
         public TaskReminder(T opts, bool proccessImmediately = true)
         {
             _Opts = opts;
@@ -33,45 +34,82 @@ namespace Task.ConsoleApp
 
         public void WatchTasks(params TaskLib.Task[] tasks)
         {
-            _Tasks = tasks;
-            foreach(TaskLib.Task task in _Tasks.Where(t => t.IsComplited != true))
+            if(_Tasks.Count > 0)
             {
-                Console.WriteLine($"{DateTime.Now} Start observe {task}");
-                task.OnTaskTime += (s, e) => InvokeTaskComand((TaskLib.Task)s);
-                task.StartObserve();
+                DisposeTasks();
+                _Tasks.Clear();
             }
+
+            AddTasksToWatch(tasks);
+        }
+        public void AddTasksToWatch(params TaskLib.Task[] tasks)
+        {
+            foreach(TaskLib.Task task in tasks.Where(t => t.IsComplited != true))
+            {
+                AddTaskToWatch(task);
+            }
+        }
+        public void RemoveTask(int taskId)
+        {
+            TaskLib.Task task = _Tasks.FirstOrDefault(t => t.TaskId == taskId);
+            Log.InfoAsync($"remove task({task}).");
+            _Tasks.Remove(task);
+            task.Dispose();
+        }
+        public bool AddTaskToWatch(TaskLib.Task task)
+        {
+            _Tasks.Add(task);
+
+            if(task.IsComplited == true)
+                return false;
+
+            Log.InfoAsync($"Start observe {task}");
+            task.OnTaskTime += (s, e) => InvokeTaskComand((TaskLib.Task)s);
+            task.StartObserve();
+
+            return true;
         }
 
         public void InvokeTaskComand(TaskLib.Task task)
         {
-            Console.WriteLine($"{DateTime.Now} Start executing task:'{task.Name}' command:'{_Opts.CmdCommandText}'");
-
-            string command = _Opts.GetTaskCmdCommand(task);//_Opts.CmdCommandText.Replace(CmdArgs.TaskNameReplacer, $"{task.Name}");
-            Process process = new Process();
-            process.StartInfo = new ProcessStartInfo("cmd", @"/c " + command);
-            process.StartInfo.RedirectStandardInput = true;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.Start();
-
-            void streamShow(System.IO.StreamReader streamReader)
+            try
             {
-                if(streamReader.ReadToEnd() is string streamData && !string.IsNullOrEmpty(streamData))
-                    Console.WriteLine(streamData);
+                string command = _Opts.GetTaskCmdCommand(task);
+
+                //System.Threading.Tasks.Task.Factory.StartNew(() => Console.WriteLine($"{DateTime.Now} Start executing task:'{task.Name}' command:'{command}'"));
+                Log.InfoAsync($"Start executing task:'{task.Name}' command:'{command}'");
+
+                //_Opts.CmdCommandText.Replace(CmdArgs.TaskNameReplacer, $"{task.Name}");
+                Process process = new Process();
+                process.StartInfo = new ProcessStartInfo("cmd", @"/c " + command);
+                process.StartInfo.RedirectStandardInput = true;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.UseShellExecute = false;
+                process.Start();
+
+                void streamShow(System.IO.StreamReader streamReader)
+                {
+                    if(streamReader.ReadToEnd() is string streamData && !string.IsNullOrEmpty(streamData))
+                        Log.InfoAsync(streamData);
+                }
+                streamShow(process.StandardOutput);
+                streamShow(process.StandardError);
             }
-            streamShow(process.StandardOutput);
-            streamShow(process.StandardError);
+            catch(Exception ex)
+            {
+                Log.ErrorAsync(ex.GetMessages());
+            }
         }
 
         public virtual void Dispose()
         {
-
+            DisposeTasks();
         }
         protected void DisposeTasks()
         {
-            _Tasks?.ToList().ForEach(t => t.Dispose());
+            _Tasks?.ForEach(t => t.Dispose());
         }
     }
 }

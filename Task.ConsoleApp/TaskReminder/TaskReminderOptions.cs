@@ -29,7 +29,7 @@ namespace Task.ConsoleApp
     public interface IWebTasksOptions : IOptions
     {        
         string URI { get; set; }
-        string UserKey { get; set; }        
-        TimeSpan RequestPeriod { get; set; }
+        //string UserKey { get; set; }
+        int ReconnectPeriod { get; set; }
     }
 }

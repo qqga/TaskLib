@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Task.ConsoleApp
 {
-    class NewTaskReminder : TaskReminder<NewTaskCmdArgs>, IDisposable
+    class NewTaskReminder : TaskReminder<INewTaskOptions>, IDisposable
     {
-        public NewTaskReminder(NewTaskCmdArgs arguments) : base(arguments)
+        public NewTaskReminder(INewTaskOptions arguments) : base(arguments)
         {
         }
         public override void Process()
@@ -25,7 +25,7 @@ namespace Task.ConsoleApp
 
         public override void Dispose()
         {
-            base.DisposeTasks();
+            base.Dispose();
         }
     }
 }

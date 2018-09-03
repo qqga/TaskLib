@@ -192,7 +192,7 @@ namespace TaskLib
         }
 
         public void Dispose()
-        {
+        {            
             _Timer?.Dispose();
         }
     }

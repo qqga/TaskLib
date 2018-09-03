@@ -17,10 +17,11 @@ namespace Task.ConsoleApp
             ITaskReminder taskReminder = null;
 
             var res = CommandLine.Parser.Default
-                .ParseArguments<FileCmdArgs, NewTaskCmdArgs, CmdArgs>(args)
+                .ParseArguments<FileCmdArgs, NewTaskCmdArgs, CmdArgs, WebTasksOptions>(args)
                 .MapResult(
                  (FileCmdArgs fileArgs) => { taskReminder = new FileTaskReminder(fileArgs); return 1; },
                  (NewTaskCmdArgs newTaskArgs) => { taskReminder = new NewTaskReminder(newTaskArgs); return 1; },
+                 (WebTasksOptions webTaskArgs) => { taskReminder = new WebTaskReminder(webTaskArgs, (url, period) => new Utils.WebSocketConsoleClient(url, period)); return 1; },
                  HandleParseError);
 
             Console.WriteLine("press 'E'- to exit; 'H'- to hide console.");

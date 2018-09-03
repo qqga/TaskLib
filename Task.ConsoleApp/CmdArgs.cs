@@ -56,10 +56,9 @@ namespace Task.ConsoleApp
     {
         [Value(0, Default = "URI", HelpText = "URI of web api, which returns task in json format.")]
         public string URI { get; set; }
-        [Option('k', "Key", HelpText = "User app key, to identify concrete user in web api.")]
-        public string UserKey { get; set; }
-        [Option('p', "Period", HelpText = "Period to ")]
-        public string RequestPeriodStr { get; set; }
-        public TimeSpan RequestPeriod { get; set; }
+        //[Option('k', "Key", HelpText = "User app key, to identify concrete user in web api.")]
+        //public string UserKey { get; set; }
+        [Option('r', "reconnectPeriod", Default = 5000, HelpText = "Wait time(ms) before reconnect.")]
+        public int ReconnectPeriod { get; set; }
     }
 }

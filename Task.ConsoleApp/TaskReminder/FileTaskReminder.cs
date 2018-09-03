@@ -24,7 +24,7 @@ namespace Task.ConsoleApp
 
         private void LoadTasksAndWatch()
         {
-            Console.WriteLine($"Loading tasks from file '{_Opts.FileName}'");
+            Log.InfoAsync($"Loading tasks from file '{_Opts.FileName}'");
             TaskLib.Task[] tasks = GetFileTasks();
             WatchTasks(tasks);
         }
@@ -55,8 +55,8 @@ namespace Task.ConsoleApp
             }
             catch(System.IO.IOException ioEx)
             {
-                Console.WriteLine(ioEx.Message);
-                Console.WriteLine($"Wait file {FileReadErrorTimeWait}ms...");
+                Log.InfoAsync(ioEx.Message);
+                Log.InfoAsync($"Wait file {FileReadErrorTimeWait}ms...");
                 System.Threading.Tasks.Task.Delay(FileReadErrorTimeWait).Wait();
             }
 
@@ -78,7 +78,7 @@ namespace Task.ConsoleApp
         {
             if(e.ChangeType == WatcherChangeTypes.Changed && IsRealFileChanged(e.FullPath))
             {
-                Console.WriteLine("File Changed");
+                Log.InfoAsync($"File Changed");
                 ReLoadTasksAndWatch();
             }
         }
@@ -100,7 +100,7 @@ namespace Task.ConsoleApp
         {
             _FileSystemWatcher.EnableRaisingEvents = false;
             _FileSystemWatcher?.Dispose();
-            base.DisposeTasks();
+            base.Dispose();
         }
     }
 }
